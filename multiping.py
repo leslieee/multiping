@@ -1,12 +1,14 @@
 #!/usr/bin/python
 #encoding=utf8  
-#leslie 2017.9.1
+# leslie
+
 from threading import Thread
 import time
 import os
 import commands
 import urllib
 import json
+import platform
 
 # 此处加入ip 注意列表格式-_-
 ip = [  '101.254.176.225',
@@ -49,7 +51,14 @@ def printDelay():
 
 def ping(ip,i):
     while 1:
-        output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
+        output = ""
+        sysstr = platform.system()
+        if sysstr == "Darwin":
+            output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
+        elif sysstr == "Linux":
+            output = commands.getoutput("ping -c 1 -w 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
+        elif sysstr == "Windows":
+            output = commands.getoutput("ping -c 1 -w 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
         if output == "":
             lost[i] += 1
             output = "          "
