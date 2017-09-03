@@ -287,37 +287,23 @@ def requestInfo(ip,i):
 
 def printDelay():
     while 1:
-        if sysstr == "Darwin":
-            os.system('clear')
-            for i in range(len(ip)):
-                print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + loststr[i] + "" + "sent:" + str(sent[i]) + "\t" + region[i]
-        elif sysstr == "Linux":
-            os.system('clear')
-            for i in range(len(ip)):
-                print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + loststr[i] + "" + "sent:" + str(sent[i]) + "\t" + region[i]
-        elif sysstr == "Windows":
-            os.system('cls')
-            for i in range(len(ip)):
-                print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + loststr[i] + "" + "sent:" + sentstr[i] + "" + region[i]
-        
+        clear = ""
+        if sysstr == "Windows":
+            clear = "cls"
+        else:
+            clear = "clear"
+            
+        os.system(clear)
+        for i in range(len(ip)):
+            print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + loststr[i] + "" + "sent:" + sentstr[i] + "" + region[i]
         time.sleep(1)
 
 def ping(ip,i):
     while 1:
-        # output = ""
-        # if sysstr == "Darwin":
-        #     # output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
-        #     output = verbose_ping(ip)
-        # elif sysstr == "Linux":
-        #     output = commands.getoutput("ping -c 1 -w 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
-        # elif sysstr == "Windows":
-        #     output = commands.getoutput("ping -n 1 -w 500 " + ip).replace("'{ '", "").decode("GBK").encode("UTF-8")
-        #     output = commands.getoutput("echo " + output + "|grep 时间=").replace("'{ '", "").decode("GBK").encode("UTF-8")
-        #     output = commands.getoutput("echo " + output + "|awk -F '=' '{print $3}'").replace("'{ '", "").decode("GBK").encode("UTF-8")
-        #     # output = commands.getoutput("ping -n 1 -w 500 " + ip + "|grep 时间=|awk -F '=' '{print $3}'")
-
-        output = verbose_ping(ip)
-
+        if sysstr == "Darwin":
+            output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
+        else:
+            output = verbose_ping(ip)
         if output == "":
             output = "          "
             lost[i] += 1
