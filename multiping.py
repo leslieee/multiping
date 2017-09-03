@@ -26,6 +26,7 @@ ip = [  '101.254.176.225',
         '109.235.69.33',
         '176.31.141.12',
         '5.196.116.230',
+        '127.0.0.1'
     ]
 
 # 第三方pure pyhton ping 实现
@@ -295,7 +296,7 @@ def printDelay():
             
         os.system(clear)
         for i in range(len(ip)):
-            print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + loststr[i] + "" + "sent:" + sentstr[i] + "" + region[i]
+            print ip[i] + "\t" + "dalay:" + delay[i] + "lost:" + loststr[i] + "sent:" + sentstr[i] + region[i]
         time.sleep(1)
 
 def ping(ip,i):
@@ -305,7 +306,7 @@ def ping(ip,i):
         else:
             output = verbose_ping(ip)
         if output == "":
-            output = "          "
+            output = "丢失       "
             lost[i] += 1
             le = len(str(lost[i]))
             if le == 1:
@@ -314,12 +315,14 @@ def ping(ip,i):
                 loststr[i] = str(lost[i]) + " "
         else:
             le = len(output)
-            if le == 9:
-                output += " "
+            if le == 7:
+                output += "     "
             elif le == 8:
-                output += "  "
-            elif le == 7:
                 output += "   "
+            elif le == 9:
+                output += "  "
+            elif le == 10:
+                output += " "
         sent[i] += 1
         le = len(str(sent[i]))
         if le == 1:
