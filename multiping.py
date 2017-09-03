@@ -313,8 +313,13 @@ def ping(ip,i):
             elif le == 2:
                 loststr[i] = str(lost[i]) + " "
         else:
-            if len(output) < 10:
+            le = len(output)
+            if le == 9:
                 output += " "
+            elif le == 8:
+                output += "  "
+            elif le == 7:
+                output += "   "
         sent[i] += 1
         le = len(str(sent[i]))
         if le == 1:
