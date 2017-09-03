@@ -9,6 +9,9 @@ import commands
 import urllib
 import json
 import platform
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # 此处加入ip 注意列表格式-_-
 ip = [  '101.254.176.225',
@@ -36,6 +39,7 @@ region = []
 delay = []
 lost = []
 sent = []
+sysstr = platform.system()
 
 def requestInfo(ip,i):
     response = urllib.urlopen('https://ip.huomao.com/ip?ip=' + ip)
@@ -44,21 +48,33 @@ def requestInfo(ip,i):
 
 def printDelay():
     while 1:
-        os.system('clear')
-        for i in range(len(ip)):
-            print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + str(lost[i]) + " \t" + "sent:" + str(sent[i]) + "\t" + region[i]
+        if sysstr == "Darwin":
+            os.system('clear')
+            for i in range(len(ip)):
+                print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + str(lost[i]) + " \t" + "sent:" + str(sent[i]) + "\t" + region[i]
+        elif sysstr == "Linux":
+            os.system('clear')
+            for i in range(len(ip)):
+                print ip[i] + "\t" + "dalay:" + delay[i] + "\b " + "lost:" + str(lost[i]) + " \t" + "sent:" + str(sent[i]) + "\t" + region[i]
+        elif sysstr == "Windows":
+            os.system('cls')
+            for i in range(len(ip)):
+                print ip[i] + "\t" + "dalay:" + delay[i] + " " + "lost:" + str(lost[i]) + " \t" + "sent:" + str(sent[i]) + "\t" + region[i]
+        
         time.sleep(1)
 
 def ping(ip,i):
     while 1:
         output = ""
-        sysstr = platform.system()
         if sysstr == "Darwin":
             output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
         elif sysstr == "Linux":
             output = commands.getoutput("ping -c 1 -w 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
         elif sysstr == "Windows":
-            output = commands.getoutput("ping -c 1 -w 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
+            output = commands.getoutput("ping -n 1 -w 500 " + ip).replace("'{ '", "").decode("GBK").encode("UTF-8")
+            output = commands.getoutput("echo " + output + "|grep 时间=").replace("'{ '", "").decode("GBK").encode("UTF-8")
+            output = commands.getoutput("echo " + output + "|awk -F '=' '{print $3}'").replace("'{ '", "").decode("GBK").encode("UTF-8")
+            # output = commands.getoutput("ping -n 1 -w 500 " + ip + "|grep 时间=|awk -F '=' '{print $3}'")
         if output == "":
             lost[i] += 1
             output = "          "
