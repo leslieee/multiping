@@ -3,6 +3,7 @@
 # leslie
 
 # 此处加入ip 注意列表格式-_-
+# 如果当前目录存在ip.txt 则优先读取文件
 ip = [  '101.254.176.225',
         '222.186.56.1',
         '103.236.136.1',
@@ -31,7 +32,7 @@ ip = [  '101.254.176.225',
 
 # 第三方pure pyhton ping 实现
 # 修改了my_ID变量的获取方式
-# 修改了方法返回类型
+# 修改了主方法返回类型
 ##########################################################
 """
     A pure python ping implementation using raw socket.
@@ -269,7 +270,6 @@ import urllib
 import json
 import platform
 import sys
-# import library
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -281,19 +281,18 @@ sent = []
 sentstr = []
 sysstr = platform.system()
 
-def requestInfo(ip,i):
+def requestinfo(ip,i):
     response = urllib.urlopen('https://ip.huomao.com/ip?ip=' + ip)
     jsonstr = json.loads(response.read())
     region[i] = jsonstr["country"] + jsonstr["province"] + jsonstr["city"] + jsonstr["isp"]
 
-def printDelay():
+def printdelay():
     while 1:
         clear = ""
         if sysstr == "Windows":
             clear = "cls"
         else:
             clear = "clear"
-            
         os.system(clear)
         for i in range(len(ip)):
             print ip[i] + "\t" + "dalay:" + delay[i] + "lost:" + loststr[i] + "sent:" + sentstr[i] + region[i]
@@ -337,7 +336,25 @@ def ping(ip,i):
         time.sleep(0.5)
 
 def main():
-    # init
+    try:
+        file = open("ip.txt","r")
+        lines = file.readlines()
+        global ip
+        ip = []
+        for line in lines:
+            if str(line).startswith("#"):
+                continue
+            line = str(line).replace("\n", "")
+            if line == "":
+                continue
+            ip.append(line)
+        file.close()
+    except:
+        file = open("ip.txt", "w")
+        file.write("# 此处增删ip 一行一个 保存之后重新启动脚本\n")
+        for i in range(len(ip)):
+            file.write(ip[i] + "\n")
+        file.close()
     for i in range(len(ip)):
         region.append("")
         delay.append("")
@@ -345,14 +362,13 @@ def main():
         loststr.append("   ")
         sent.append(0)
         sentstr.append("     ")
-
     for i in range(len(ip)):
         t = Thread(target=ping, args=(ip[i],i))
         t.start()
     for i in range(len(ip)):
-        t = Thread(target=requestInfo, args=(ip[i],i))
+        t = Thread(target=requestinfo, args=(ip[i],i))
         t.start()
-    th = Thread(target=printDelay)
+    th = Thread(target=printdelay)
     th.start()
     q = raw_input()
     if q == "q":
