@@ -12,9 +12,14 @@ Network packet loss analysis script
 # 支持平台
 Mac, Linux, Windows
 # 启动
+mac/linux
 > python multiping.py
 
 (mac需要加sudo运行)
+
+windows
+
+双击执行multiping.py(有py环境)或者multiping.exe(没有安装python)
 # 停止
 ctrl + z, 或者直接关掉terminal
 # 加入新的ip
