@@ -337,6 +337,14 @@ def ping(ip,i):
 
 def main():
     try:
+        # 处理win记事本会把utf-8保存为utf-8 BOM的问题
+        BOM = b'\xef\xbb\xbf'
+        with open("ip.txt", 'rb') as f:
+            if f.read(3) == BOM:
+                data = f.read()
+                with open("ip.txt", 'wb') as f:
+                    f.write(data)
+                    f.close()
         file = open("ip.txt","r")
         lines = file.readlines()
         global ip
@@ -344,7 +352,7 @@ def main():
         for line in lines:
             if str(line).startswith("#"):
                 continue
-            line = str(line).replace("\n", "")
+            line = str(line).replace("\n", "").replace(" ", "")
             if line == "":
                 continue
             ip.append(line)
