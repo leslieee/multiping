@@ -27,7 +27,6 @@ ip = [  '101.254.176.225',
         '109.235.69.33',
         '176.31.141.12',
         '5.196.116.230',
-        '127.0.0.1'
     ]
 
 # 第三方pure pyhton ping 实现
@@ -363,6 +362,26 @@ def main():
         for i in range(len(ip)):
             file.write(ip[i] + "\n")
         file.close()
+
+    host = ""
+    try:
+        host = str(socket.gethostbyname(socket.gethostname()))
+    except:
+        host = "127.0.0.1"
+    if host == "127.0.0.1":
+        # 说明是linux
+        output = commands.getoutput("ip addr|grep 'inet '|grep -v 127|awk -F ' ' '{print $2}'|awk -F '/' '{print $1}'")
+        if output != "" and len(output) < 16:
+            host = output
+    h = host.split(".")
+    # 拼接网关地址
+    gateway = h[0] + "." + h[1] + "." + h[2] + "." + "1"
+    if sysstr == "Darwin":
+        ip.insert(0, gateway)
+    else:
+        if verbose_ping(gateway) != "":
+            ip.insert(0, gateway)
+
     for i in range(len(ip)):
         region.append("")
         delay.append("")
