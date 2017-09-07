@@ -15,8 +15,6 @@ Mac, Linux, Windows
 mac/linux
 > python multiping.py
 
-(mac需要加sudo运行)
-
 windows
 
 双击执行multiping.py(有py环境)或者multiping.exe(没有安装python)
