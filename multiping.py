@@ -262,12 +262,7 @@ def verbose_ping(dest_addr, timeout = 1, count = 1):
 ################################################
 
 from threading import Thread
-import time
-import os
-import commands
-import urllib
-import json
-import platform
+import time, os, commands, urllib, json, platform, re
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -279,6 +274,7 @@ loststr = []
 sent = []
 sentstr = []
 sysstr = platform.system()
+exitapp = False
 
 def requestinfo(ip,i):
     response = urllib.urlopen('https://ip.huomao.com/ip?ip=' + ip)
@@ -286,7 +282,7 @@ def requestinfo(ip,i):
     region[i] = jsonstr["country"] + jsonstr["province"] + jsonstr["city"] + jsonstr["isp"]
 
 def printdelay():
-    while 1:
+    while not exitapp:
         clear = ""
         if sysstr == "Windows":
             clear = "cls"
@@ -298,7 +294,7 @@ def printdelay():
         time.sleep(1)
 
 def ping(ip,i):
-    while 1:
+    while not exitapp:
         if sysstr == "Darwin":
             output = commands.getoutput("ping -c 1 -t 1 " + ip + "|grep time|awk -F '=' '{print $4}'")
         else:
@@ -332,7 +328,7 @@ def ping(ip,i):
         elif le == 4:
             sentstr[i] = str(sent[i]) + " "
         delay[i] = output
-        time.sleep(0.5)
+        time.sleep(0.5)    
 
 def main():
     try:
@@ -363,24 +359,23 @@ def main():
             file.write(ip[i] + "\n")
         file.close()
 
-    host = ""
-    try:
-        host = str(socket.gethostbyname(socket.gethostname()))
-    except:
-        host = "127.0.0.1"
-    if host == "127.0.0.1":
-        # 说明是linux
+    output = ""
+    if sysstr == "Linux":
         output = commands.getoutput("ip addr|grep 'inet '|grep -v 127|awk -F ' ' '{print $2}'|awk -F '/' '{print $1}'")
-        if output != "" and len(output) < 16:
-            host = output
-    h = host.split(".")
-    # 拼接网关地址
-    gateway = h[0] + "." + h[1] + "." + h[2] + "." + "1"
-    if sysstr == "Darwin":
-        ip.insert(0, gateway)
-    else:
-        if verbose_ping(gateway) != "":
+    elif sysstr == "Darwin":
+        output = commands.getoutput("ifconfig|grep 'inet '|grep -v 127|awk '{print $2}'")
+    if output == "":
+        output = str(socket.gethostbyname(socket.gethostname()))
+    pattern = re.compile("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$")
+    if pattern.findall(output).count > 0:
+        h = output.split(".")
+        # 拼接网关地址
+        gateway = h[0] + "." + h[1] + "." + h[2] + "." + "1"
+        if sysstr == "Darwin":
             ip.insert(0, gateway)
+        else:
+            if verbose_ping(gateway) != "":
+                ip.insert(0, gateway)
 
     for i in range(len(ip)):
         region.append("")
@@ -397,15 +392,14 @@ def main():
         t.start()
     th = Thread(target=printdelay)
     th.start()
-    q = raw_input()
-    if q == "q":
-        sys.exit(0)
+    raw_input()
 
 if __name__ == '__main__':
-	main()
-
-
-
+    try:
+        main()
+    except KeyboardInterrupt:
+        exitapp = True
+        print("\r")
 
 
 
