@@ -221,7 +221,11 @@ def do_one(dest_addr, timeout):
 
     # my_ID = os.getpid() & 0xFFFF
     # my_ID = threading.current_thread().ident & 0xFFFF
-    my_ID = int(str(random.random()).replace("0.", "")) & 0xFFFF
+    try:
+        ran = int(str(random.random()).replace("0.", ""))
+    except:
+        ran = 11111
+    my_ID = ran & 0xFFFF
 
     send_one_ping(my_socket, dest_addr, my_ID)
     delay = receive_one_ping(my_socket, my_ID, timeout)
