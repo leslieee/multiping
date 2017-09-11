@@ -287,16 +287,14 @@ def requestinfo(ip,i):
 
 def printdelay():
     while not exitapp:
-        content = ""
-        for i in range(len(ip)):
-            content += ip[i] + "\t" + "dalay:" + delay[i] + "lost:" + loststr[i] + "sent:" + sentstr[i] + region[i] + "\n"
-        content = content[:-1]
+        clear = ""
         if sysstr == "Windows":
             clear = "cls"
         else:
             clear = "clear"
         os.system(clear)
-        print content
+        for i in range(len(ip)):
+            print ip[i] + "\t" + "dalay:" + delay[i] + "lost:" + loststr[i] + "sent:" + sentstr[i] + region[i]
         time.sleep(1)
 
 def ping(ip,i):
