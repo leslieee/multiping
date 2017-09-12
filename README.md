@@ -4,9 +4,9 @@ Network packet loss analysis script
 同时ping多个服务器并统计丢包率, 观察线路的国际出口情况, 便于ss/ssr线路选择
 # 效果图
 > Windows
-![](show1.png)
+![](img/show_win.png)
 > Mac
-![](show2.png)
+![](img/show_mac.png)
 # 运营环境
 > pyhton2.7.*
 # 支持平台
