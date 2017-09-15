@@ -308,9 +308,13 @@ def ping(ip,i):
             lost[i] += 1
             le = len(str(lost[i]))
             if le == 1:
-                loststr[i] = str(lost[i]) + "  "
+                loststr[i] = str(lost[i]) + "   "
             elif le == 2:
+                loststr[i] = str(lost[i]) + "  "
+            elif le == 3:
                 loststr[i] = str(lost[i]) + " "
+            elif le == 4:
+                loststr[i] = str(lost[i]) + ""
         else:
             le = len(output)
             if le == 7:
@@ -331,6 +335,8 @@ def ping(ip,i):
             sentstr[i] = str(sent[i]) + "  "
         elif le == 4:
             sentstr[i] = str(sent[i]) + " "
+        elif le == 5:
+            sentstr[i] = str(sent[i]) + ""
         delay[i] = output
         time.sleep(0.5)    
 
@@ -385,7 +391,7 @@ def main():
         region.append("")
         delay.append("")
         lost.append(0)
-        loststr.append("   ")
+        loststr.append("    ")
         sent.append(0)
         sentstr.append("     ")
     for i in range(len(ip)):
