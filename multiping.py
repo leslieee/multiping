@@ -294,7 +294,7 @@ def printdelay():
             clear = "clear"
         os.system(clear)
         for i in range(len(ip)):
-            print ip[i] + "\t" + "dalay:" + delay[i] + "lost:" + loststr[i] + "sent:" + sentstr[i] + region[i]
+            print ip[i] + "\t" + "dalay:" + delay[i] + "\033[0;31m" + "lost:" + loststr[i] + "\033[0m" + "sent:" + sentstr[i] + region[i]
         time.sleep(1)
 
 def ping(ip,i):
