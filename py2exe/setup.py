@@ -15,7 +15,7 @@ py2exe_options = {
  
 setup(
       name = 'multiping',
-      version = '1.0',
+      version = '1.0.3',
       console = [{ "script":'multiping.py',"icon_resources":[(1,"myico.ico")]}], 
       zipfile = None,
       options = {'py2exe': py2exe_options}
